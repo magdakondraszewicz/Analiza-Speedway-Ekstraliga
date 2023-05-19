@@ -1,0 +1,38 @@
+"images\\gkm-grudziac.png"
+"images\\apator-torun.png"
+"images\\motor-lublin.png"
+"images\\sparta-wroclaw.png"
+"images\\stal-gorzow.png"
+"images\\tz-ostrovia.png"
+"images\\unia-leszno.png"
+"images\\wlokniarz-czestochowa.png"
+
+od6:
+"images\\stal-gorzow.png", "images\\gkm-grudziadz.png", "images\\unia-leszno.png", "images\\wlokniarz-czestochowa.png",
+ "images\\stal-gorzow.png","images\\motor-lublin.png", "images\\sparta-wroclaw.png", "images\\motor-lublin.png", 
+"images\\apator-torun.png", 
+"images\\stal-gorzow.png", "images\\wlokniarz-czestochowa.png", 
+"images\\apator-torun.png", "images\\tz-ostrovia.png", "images\\wlokniarz-czestochowa.png", "images\\unia-leszno.png", 
+"images\\sparta-wroclaw.png", "images\\motor-lublin.png", "images\\wlokniarz-czestochowa.png","images\\stal-gorzow.png", 
+"images\\sparta-wroclaw.png", "images\\unia-leszno.png", "images\\motor-lublin.png", "images\\apator-torun.png", 
+"images\\gkm-grudziadz.png","images\\wlokniarz-czestochowa.png", "images\\unia-leszno.png", "images\\gkm-grudziadz.png", 
+"images\\apator-torun.png", "images\\gkm-grudziadz.png", "images\\motor-lublin.png", "images\\tz-ostrovia.png", "images\\gkm-grudziadz.png",
+"images\\motor-lublin.png", "images\\unia-leszno.png", "images\\tz-ostrovia.png",
+"images\\wlokniarz-czestochowa.png",  "images\\sparta-wroclaw.png", "images\\sparta-wroclaw.png","images\\tz-ostrovia.png",
+"images\\gkm-grudziadz.png", "images\\unia-leszno.png", "images\\stal-gorzow.png", "images\\tz-ostrovia.png", 
+"images\\apator-torun.png", "images\\tz-ostrovia.png", "images\\stal-gorzow.png", "images\\unia-leszno.png",
+"images\\apator-torun.png", "images\\sparta-wroclaw.png"
+
+Zawodnik Klub M B 1 2 3
+4
+D
+U
+W
+T
+Pkt.
+Bonus
+Razem
+Śr/bieg
+Śr/mecz
+Dom
+Wyjazd

@@ -1,0 +1,469 @@
+---
+title: "Speedway Ekstraliga"
+lang: pl
+author: "Magdalena Kondraszewicz"
+date: "01-01-2023"
+language: 
+  title-block-author-single: "Autor"
+  crossref-fig-title: "Wykres"
+  section-title-references: "Referencje"
+  title-block-published: "Publikacja"
+format: 
+  html:
+    echo: false
+    message: false
+    warning: false
+    self-contained: true
+    theme: paper
+editor: visual
+bibliography: references.bib
+---
+
+```{r}
+library(knitr)
+library(kableExtra)
+library(formattable)
+library(data.table)
+library(flextable)
+library(ftExtra)
+library(gt)
+library(gtsummary)
+library(ggplot2)
+library(rstatix)
+library(scales)
+library(broom)
+library(plotly)
+```
+
+```{r}
+library(rvest)
+library(tidyverse)
+url <- "https://sportowefakty.wp.pl/zuzel/pge-ekstraliga/statystyki/2022/pelne"
+page <- read_html(url)
+```
+
+```{r}
+Zawodnik <- page %>% html_nodes("table:nth-child(1) .align--left:nth-child(2) a") %>% 
+  html_text() 
+Klub <- page %>% html_nodes("table:nth-child(1) .align--left+ .align--left a") %>% 
+  html_text() 
+
+Mecze <- page %>% html_nodes("table:nth-child(1) .align--left+ .bold") %>% 
+  html_text() %>% parse_number()
+
+Biegi <- page %>% html_nodes("table:nth-child(1) .bold:nth-child(5)") %>% 
+  html_text() %>% parse_number()
+
+I <- page %>% html_nodes("table:nth-child(1) td:nth-child(6)") %>% 
+  html_text() %>% parse_number()
+
+II <- page %>% html_nodes("table:nth-child(1) td:nth-child(7)") %>% 
+  html_text() %>% parse_number()
+
+III <- page %>% html_nodes("table:nth-child(1) td:nth-child(8)") %>% 
+  html_text() %>% parse_number()
+
+IV <- page %>% html_nodes("table:nth-child(1) td:nth-child(9)") %>% 
+  html_text() %>% parse_number()
+
+D <- page %>% html_nodes("table:nth-child(1) td:nth-child(10)") %>% 
+  html_text() %>% parse_number()
+
+U <- page %>% html_nodes("table:nth-child(1) td:nth-child(11)") %>% 
+  html_text() %>% parse_number()
+
+W <- page %>% html_nodes("table:nth-child(1) td:nth-child(12)") %>% 
+  html_text() %>% parse_number()
+
+T <- page %>% html_nodes("table:nth-child(1) td:nth-child(13)") %>% 
+  html_text() %>% parse_number()
+
+Pkt. <- page %>% html_nodes("table:nth-child(1) td:nth-child(14)") %>% 
+  html_text() %>% parse_number()
+
+Bonus <- page %>% html_nodes("table:nth-child(1) td:nth-child(15)") %>% 
+  html_text() %>% parse_number()
+
+Razem <- page %>% html_nodes("table:nth-child(1) td:nth-child(16)") %>% 
+  html_text() %>% parse_number()
+
+Śr.bieg <- page %>% html_nodes("table:nth-child(1) td:nth-child(17)") %>% 
+  html_text() %>% parse_number(locale=locale(decimal_mark=","))
+
+Śr.mecz <- page %>% html_nodes("table:nth-child(1) td:nth-child(18)") %>% 
+  html_text() %>% parse_number(locale=locale(decimal_mark=","))
+
+Śr.bieg.dom <- page %>% html_nodes("table:nth-child(1) td:nth-child(19)") %>% 
+  html_text() %>% parse_number(locale=locale(decimal_mark=","))
+
+Śr.bieg.wyjazd <- page %>% html_nodes("table:nth-child(1) td:nth-child(20)") %>% 
+  html_text() %>% parse_number(locale=locale(decimal_mark=","))
+    
+
+```
+
+```{r}
+
+dt <- data.frame(Zawodnik, Klub, Mecze, Biegi, I, II, III, IV, D, U, W, T, Pkt., Bonus,Razem, Śr.bieg, Śr.mecz, Śr.bieg.dom, Śr.bieg.wyjazd)
+
+
+```
+
+```{r}
+
+kluby <- c("images\\stal-gorzow.png", "images\\gkm-grudziadz.png", "images\\unia-leszno.png", "images\\wlokniarz-czestochowa.png",
+ "images\\stal-gorzow.png","images\\motor-lublin.png", "images\\sparta-wroclaw.png", "images\\motor-lublin.png", 
+"images\\apator-torun.png", 
+"images\\stal-gorzow.png", "images\\wlokniarz-czestochowa.png", 
+"images\\apator-torun.png", "images\\tz-ostrovia.png", "images\\wlokniarz-czestochowa.png", "images\\unia-leszno.png", 
+"images\\sparta-wroclaw.png", "images\\motor-lublin.png", "images\\wlokniarz-czestochowa.png","images\\stal-gorzow.png", 
+"images\\sparta-wroclaw.png", "images\\unia-leszno.png", "images\\motor-lublin.png", "images\\apator-torun.png", 
+"images\\gkm-grudziadz.png","images\\wlokniarz-czestochowa.png", "images\\unia-leszno.png", "images\\gkm-grudziadz.png", 
+"images\\apator-torun.png", "images\\gkm-grudziadz.png", "images\\motor-lublin.png", "images\\tz-ostrovia.png", "images\\gkm-grudziadz.png",
+"images\\motor-lublin.png", "images\\unia-leszno.png", "images\\tz-ostrovia.png",
+"images\\wlokniarz-czestochowa.png",  "images\\sparta-wroclaw.png", "images\\sparta-wroclaw.png","images\\tz-ostrovia.png",
+"images\\gkm-grudziadz.png", "images\\unia-leszno.png", "images\\stal-gorzow.png", "images\\tz-ostrovia.png", 
+"images\\apator-torun.png", "images\\tz-ostrovia.png", "images\\stal-gorzow.png", "images\\unia-leszno.png",
+"images\\apator-torun.png", "images\\sparta-wroclaw.png"
+)
+
+dt$Klub <- ""
+```
+
+## Wprowadzenie
+
+**Speedway Ekstraliga 2022** (spons. *PGE Ekstraliga*) jest to najwyższa w hierarchii klasa ligowych rozgrywek żużlowych w Polsce, utworzona w 1999 roku. @Wikipedia
+
+@tbl-1 zawiera statystyki indywidualne zawodników w sezonie 2022.
+
+Można wyróżnić takie kategorie jak:
+
+-   Zawodnik - imię i nazwisko zakwalifikowanego zawodnika
+
+-   Klub - klub do jakiego należy dany zawodnik
+
+-   Mecze - liczba meczów w jakich pojechał dany zawodnik
+
+-   Biegi - liczba biegów w jakich pojechał dany zawodnik
+
+-   I - liczba zdobytych pierwszych miejsc
+
+-   II - liczba zdobytych drugich miejsc
+
+-   III - liczba zdobytych trzecich miejsc
+
+-   IV - liczba zdobytych czwartych miejsc
+
+-   D - liczba defektów
+
+-   U - liczba upadków
+
+-   W - liczba innych wykluczeń
+
+-   T - liczba wykluczeń za dotknięcie taśmy
+
+-   Pkt. - suma zdobytych punktów
+
+-   Bonus - suma zdobytych punktów bonusowych
+
+-   Razem - suma wszystkich punktów (Pkt. + Bonus)
+
+-   Śr.bieg - średnia zdobytych punktów w biegu
+
+-   Śr.mecz - średnia zdobytych punktów w meczu
+
+-   Śr.bieg.dom - średnia zdobytych punktów w biegu w domu
+
+-   Śr.bieg.wyjazd - średnia zdobytych punktów w biegu na wyjeździe
+
+```{r}
+#| label: tbl-1
+#| tbl-cap: "PGE EKSTRALIGA 2022 - STATYSTYKI INDYWIDUALNE"
+dt %>% 
+kbl(booktabs = T) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size = 13)  %>%
+  column_spec(2, image = spec_image(kluby, 200, 200)) %>% 
+  column_spec(1, bold = TRUE) %>% 
+   scroll_box( height = "500px") 
+
+```
+
+@RozszerzoneStatystykiPGE
+
+## Mecze i biegi
+
+Poniższy @fig-mecz_bieg obrazuje sumę wszystkich meczów i biegów w jakich pojechał dany zawodnik.
+
+Największy wynik uzyskał Robert Lambert, zaś najmniejszy Nicki Pedersen.
+
+```{r}
+#| label: fig-mecz_bieg
+#| fig-cap: Wykres rozrzutu meczów i biegów
+m <-dt %>% ggplot(aes(x=Biegi, y=Mecze, color=Zawodnik)) +geom_point(size=3) +theme_bw() +
+  labs(size=NULL)
+ggplotly(m) 
+```
+
+## Liczba zdobytych miejsc
+
+Tabela poniżej przedstawia 20 najlepszych zawodników i liczbę zdobytych przez nich miejsc. Jest uporządkowana malejąco według zdobytych I miejsc, przez co widać, że najlepszej formie, w tym sezonie byli: Bartosz Zmarzlik, Mikkel Michelsen oraz Leon Madsen.
+
+```{r}
+#| label: tbl-zm
+#| tbl-cap: "ZDOBYTE MIEJSCA"
+
+
+ dt%>% select(Zawodnik,I, II, III, IV) %>% filter(Pkt.>=151) %>% 
+  arrange(-I, -II, -III, -IV) %>% 
+  formattable(align=c("l"),list(Zawodnik=formatter("span", style= ~ formattable::style(color="black",
+                                                      font.weight = "bold")),
+  area(col=2:5) ~ color_tile("LightCyan", "MediumBlue"))) 
+
+```
+
+Wykresy: @fig-m1, @fig-m2, @fig-m3, @fig-m4 obrazują ile ogólnie było zdobytych posczególnych miejsc.
+
+```{r}
+#| label: fig-m1
+#| fig-cap: Wykres zdobytych I miejsc
+
+
+dt %>% ggplot(aes(x=I)) + geom_histogram(color="black",fill="PaleGreen", alpha=0.5) +
+  labs(y="Liczba zawodników", x="Liczba I miejsc") + theme_minimal()
+
+
+```
+
+```{r}
+#| label: fig-m2
+#| fig-cap: Wykres zdobytych II miejsc
+dt %>% ggplot(aes(x=II)) + geom_histogram(color="black",fill= "SpringGreen", alpha=0.5) +
+  labs(y="Liczba zawodników", x="Liczba II miejsc") + theme_minimal()
+
+```
+
+```{r}
+#| label: fig-m3
+#| fig-cap: Wykres zdobytych III miejsc 
+
+
+dt %>% ggplot(aes(x=III)) + geom_histogram(color="black",fill ="LawnGreen", alpha=0.5) +
+  labs(y="Liczba zawodników", x="Liczba III miejsc")+ theme_minimal()
+```
+
+```{r}
+#| label: fig-m4
+#| fig-cap: Wykres zdobytych IV miejsc 
+dt  %>%   ggplot(aes(x=IV)) + geom_histogram(color="black",fill= "LimeGreen", alpha=0.5) +
+  labs(y="Liczba zawodników", x="Liczba IV miejsc") +
+  theme_minimal()
+
+```
+
+**Wnioski**: Najwięcej zawodników zdobyło I miejsce około od 10 do 15 razy, II miejsce - 20 lub 30 razy, III miejsce - 17 razy, a IV miejsce 23 razy.
+
+## Upadki i defekty
+
+Na wykresach @fig-uid-1, @fig-uid-2 przedstawiono ile upadków czy też defektów miał dany zawodnik.
+
+```{r}
+#| label: fig-uid
+#| fig-cap: Liczba upadków i defektów
+#| fig-subcap: 
+#|   - "Upadki"
+#|   - "Defekty"
+#| layout-ncol: 2
+u<-dt %>%
+  filter(U!=0) %>%   ggplot(aes(x=U, y=Zawodnik)) + geom_point( color="violet", shape=4,
+                                                                      size=4) +
+  labs(x="Liczba upadków") +theme_bw()
+ggplotly(u)
+
+d <- dt %>% filter(D!=0) %>% ggplot(aes(x=D, y=Zawodnik)) +geom_point(shape=4, 
+                                                                      size=4, color="DarkViolet") +
+  labs(x="Liczba defektów") +theme_bw()
+ggplotly(d)
+```
+
+## Wykluczenia
+
+Łącznie wykluczeń przez taśmę było 3 co stanowi jedynie 6%. ([@fig-wyk]) Reszta - 44 - były spowodowane m.in. spóźnieniem na start, spowodowaniem przerwania wyścigu w wyniku upadku, spowodowaniem upadku drugiego zawodnika, czy też przejechaniem wewnętrznej krawędzi toru obydwoma kołami.
+
+```{r}
+#| label: fig-wyk
+#| fig-cap: Wykluczenia
+
+
+Wykluczenia <- c("taśma", "taśma", "taśma", "inne","inne","inne","inne","inne","inne","inne","inne","inne","inne","inne","inne","inne","inne","inne","inne",
+"inne","inne","inne","inne","inne","inne","inne","inne","inne","inne","inne","inne","inne","inne",
+"inne","inne","inne","inne","inne","inne","inne","inne","inne","inne","inne","inne","inne","inne" )
+
+new_data <- data.frame(Wykluczenia)
+
+new_data %>% 
+  count(Wykluczenia) %>% 
+  mutate(perc = n/sum(n)) %>% 
+  ggplot(aes(x=Wykluczenia, y=n)) +
+  geom_bar(stat = "identity",fill=c("orange", "yellow"))  +
+  geom_text(aes(label=percent(perc)), vjust=1) +
+  theme(legend.position = "none") + labs(y="Suma")
+
+
+
+```
+
+## Punkty
+
+Z @tbl-stat można odczytać m.in. jaka była największa liczba zdobytych punktów przez zawodnika czy też średnią wszystkich zdobytych punktów. Potwierdza to @fig-gestosc.
+
+```{r}
+#| label: tbl-stat
+#| tbl-cap: "DANE STATYSTYCZNE"
+dt %>% select(Pkt., Bonus, Razem) %>%
+  get_summary_stats(show = c("n", "mean", "min", "max", "median", "sd", "se")) %>%
+  kbl(caption = "Dane statystyczne", col.names = c("Zmienna", "n", "Średnia", "Min", "Max", "Mediana", "Odchylenie standardowe", "Błąd standardowy"),escape = F) %>%
+  kable_minimal() %>%
+  kable_paper( full_width = F)  #%>%
+ # row_spec(0, bold = TRUE, color = "black")
+```
+
+```{r}
+#| label: fig-gestosc
+#| fig-cap: Wykres gęstości rozkładu punktów
+
+lala<- dt %>% select(`Suma punktów`=Razem)%>%  ggplot(aes(`Suma punktów`)) +
+  geom_density( alpha=0.5, adjust=0.9, fill="MediumOrchid") +
+  xlim(c(0,350)) + theme_light() +
+  theme(legend.position = "none") + 
+  labs(x="Suma wszystkich punktów", y="Gęstość", main="Wykres gęstości")
+ggplotly(lala)
+```
+
+#### Punkty indywidualne
+
+Poniżej została przedstawiona liczba poszczególnych punktów dla każdego zawodnika ([@tbl-pun]). Dodatkowo na niebiesko zostały zaznaczone wyniki większe niż ogólna średnia.
+
+```{r}
+#| label: tbl-pun
+#| tbl-cap: "ROZKŁAD PUNKTÓW"
+
+#dt_footnote <- dt
+dt[1,1] <- paste0(dt[1,1], 
+                              footnote_marker_symbol(1))
+
+ dt %>% select(Zawodnik, Pkt., Bonus, Razem) %>%  
+ 
+ 
+  
+  kbl(booktabs = T, escape=F) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))  %>% 
+  column_spec(2, color="white", 
+              background = ifelse(Pkt.>124, "SteelBlue", "LightGrey")) %>% 
+    column_spec(4, color="white", 
+              background = ifelse(Pkt.>137, "SteelBlue", "LightGrey")) %>% 
+  add_header_above(c(" " = 1,  "Punkty" = 3)) %>% 
+   scroll_box( height = "500px")
+
+
+# 124 to srednia - do opisu!!
+```
+
+W sezonie 2022 najwięcej punktów zdobył Bartosz Zmarzlik - trzykrotny indywidualny mistrz świata (2019, 2020, 2022). Poniżej przedstawiona jest jego fotografia.
+
+![Bartosz Zmarzlik](images/bz.jpg){#fig-bz .Rysunek fig-align="center" width="525"}
+
+```{r}
+gorzow<- dt %>% mutate(Klub = page %>%
+                         html_nodes("table:nth-child(1) .align--left+ .align--left a") %>% 
+  html_text()) %>% select(Klub, Razem, Zawodnik) %>% filter(Klub=="ebut.pl Stal Gorzów") 
+
+grudziadz<- dt %>% mutate(Klub = page %>%
+                         html_nodes("table:nth-child(1) .align--left+ .align--left a") %>% 
+  html_text()) %>% select(Klub, Razem, Zawodnik) %>% filter(Klub=="ZOOleszcz GKM Grudziądz") 
+
+leszno<- dt %>% mutate(Klub = page %>%
+                         html_nodes("table:nth-child(1) .align--left+ .align--left a") %>% 
+  html_text()) %>% select(Klub, Razem, Zawodnik) %>% filter(Klub=="Fogo Unia Leszno") 
+
+czestoch<- dt %>% mutate(Klub = page %>%
+                         html_nodes("table:nth-child(1) .align--left+ .align--left a") %>% 
+  html_text()) %>% select(Klub, Razem, Zawodnik) %>% filter(Klub=="Włókniarz Częstochowa") 
+
+lublin<- dt %>% mutate(Klub = page %>%
+                         html_nodes("table:nth-child(1) .align--left+ .align--left a") %>% 
+  html_text()) %>% select(Klub, Razem, Zawodnik) %>% filter(Klub=="Motor Lublin") 
+
+wroclaw<- dt %>% mutate(Klub = page %>%
+                         html_nodes("table:nth-child(1) .align--left+ .align--left a") %>% 
+  html_text()) %>% select(Klub, Razem, Zawodnik) %>% filter(Klub=="Betard Sparta Wrocław") 
+
+torun<- dt %>% mutate(Klub = page %>%
+                         html_nodes("table:nth-child(1) .align--left+ .align--left a") %>% 
+  html_text()) %>% select(Klub, Razem, Zawodnik) %>% filter(Klub=="For Nature Solutions Apator Toruń") 
+
+ostrovia <- dt %>% mutate(Klub = page %>%
+                         html_nodes("table:nth-child(1) .align--left+ .align--left a") %>% 
+  html_text()) %>% select(Klub, Razem, Zawodnik) %>% filter(Klub=="Arged Malesa Ostrów")
+
+gorz<- sum(gorzow$Razem)
+lbn<- sum(lublin$Razem)
+grudz<- sum(grudziadz$Razem)
+lesz<- sum(leszno$Razem)
+czest<- sum(czestoch$Razem)
+wrc<- sum(wroclaw$Razem)
+tor<- sum(torun$Razem)
+ostr<- sum(ostrovia$Razem)
+Punkty <- c(gorz, lbn, grudz, lesz, czest, wrc, tor, ostr)
+Kluby <- c("Stal Gorzów", "Motor Lublin", "GKM Grudziądz", "Unia Leszno", 
+           "Włókniarz Częstochowa", "Sparta Wrocław", "Apator Toruń", "TZ Ostrovia")
+df <- data.frame(Kluby, Punkty)
+
+```
+
+#### Punkty poszczególnych klubów
+
+@tbl-10, uporządkowana malejąco, pokazuje ile łącznie punktów zdobyli zawodnicy z danego klubu w tym sezonie.
+
+```{r}
+#| label: tbl-10
+#| tbl-cap: "PUNKTY W KLUBACH"
+ df %>%  arrange(-Punkty) %>% gt() %>% 
+  tab_style(style=cell_text(weight = "bold", size = 15), 
+            locations = cells_column_labels()) %>% 
+  
+   tab_style(style=cell_fill(color="yellow"), 
+            locations =  cells_body(columns = c(1,2), rows = 1) ) %>% 
+  tab_footnote(footnote = md("Zwycięzca ekstraligi 2022"),
+               locations = cells_body(columns = 1, rows = 1))
+
+```
+
+Dane te można również przedstawić na wykresie: @fig-loli.
+
+```{r}
+#| label: fig-loli
+#| fig-cap: Liczba punktów z podziałem na kluby
+
+f<- factor(Punkty)
+library(scales)
+
+library(palr)
+
+#df %>% mutate(Punkty=f) %>% ggplot(aes(x=Kluby, y=fct_reorder(f, Kluby))) +
+ # geom_point(color="blue", size=4) +
+  #geom_segment(aes(x=Kluby, xend=Kluby, y=0, yend=f), color="skyblue", size=1) +
+#  theme_light() +
+ 
+ # scale_x_discrete(guide = guide_axis(angle = 40)) + labs(y="Punkty")
+ df %>%   ggplot(aes(x=reorder(Kluby, -Punkty), y=Punkty)) +
+  geom_bar(stat = "identity", fill="blue", alpha=0.5) +
+  geom_text(aes(label=Punkty), vjust=1)+
+  ylim(c(0,1110)) + theme_light() +
+  scale_x_discrete(guide = guide_axis(angle = 40)) + labs(y="Punkty", x= "Kluby") 
+
+
+
+#x=fct_reorder(species, -n)
+```
+
+**Najwięcej punktów w tym sezonie zdobył Motor Lublin, tym samym wygrywając ekstraligę i zostając mistrzem Polski.**
